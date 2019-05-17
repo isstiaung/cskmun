@@ -13,9 +13,9 @@ for link in soup.find_all('a',{"class":"QuoteSummary"}):
     page = urllib2.urlopen(link_to_follow)
     page_text = BeautifulSoup(page,"lxml")
     bs_tables = page_text.find_all('table')[0]
-    panda_table = pd.read_html(str(bs_tables), header=0, parse_dates=['Match Date'])[0]
+    panda_table = pd.read_html(bs_tables, header=0, parse_dates=['Match Date'])[0]
     match_dates = panda_table['Match Date'].tolist()
-    filename = 'output_' + year + '.csv';
+    filename = './csk/output_csk_' + year + '.csv';
     panda_table.to_csv(filename, index=False)
     csv_text = pd.read_csv(filename, sep=",", header=0, parse_dates=['Match Date'])
     #print csv_text.dtypes
