@@ -8,3 +8,4 @@ csk/
 mun/
 test_output
 config.py*
+*.pyc

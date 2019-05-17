@@ -1,21 +1,25 @@
 import pandas as pd
 from bs4 import BeautifulSoup
 import urllib2
+from config import *
+from utils import *
 
-base_url = 'http://stats.espncricinfo.com'
-url = 'http://stats.espncricinfo.com/indian-premier-league-2014/engine/records/team/match_results_year.html?class=6;id=4343;type=team'
-page = urllib2.urlopen(url)
-soup = BeautifulSoup(page,"lxml")
+def pull_csk_data():
+    is_united = False
+    soup = soupen_url(start_csk_url)
 
-for link in soup.find_all('a',{"class":"QuoteSummary"}):
-    link_to_follow = base_url + link.get('href')
-    year = link.text
-    page = urllib2.urlopen(link_to_follow)
-    page_text = BeautifulSoup(page,"lxml")
-    bs_tables = page_text.find_all('table')[0]
-    panda_table = pd.read_html(bs_tables, header=0, parse_dates=['Match Date'])[0]
-    match_dates = panda_table['Match Date'].tolist()
-    filename = './csk/output_csk_' + year + '.csv';
-    panda_table.to_csv(filename, index=False)
-    csv_text = pd.read_csv(filename, sep=",", header=0, parse_dates=['Match Date'])
-    #print csv_text.dtypes
+    for link in get_links(soup,is_united):
+        link_to_follow = get_follow_link(base_csk_url,link.get(chref))
+        year = link.text
+        page_text = soupen_url(link_to_follow)
+        bs_tables = get_table(page_text,is_united)
+
+        panda_table = get_panda_table(bs_tables,is_united)
+
+        filename = get_filename(year,is_united)
+
+        panda_table.to_csv(filename, index=False)
+        csv_text = pd.read_csv(filename, sep=",", header=0, parse_dates=[csk_date_column])
+        print csv_text.dtypes
+
+pull_csk_data()

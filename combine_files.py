@@ -1,6 +1,7 @@
 import pandas as pd
 import glob,os
-import config as config
+import config
+
 
 os.chdir(config.csk_dir)
 csk_files = glob.glob("./*.csv")
