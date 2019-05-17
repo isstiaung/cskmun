@@ -16,10 +16,10 @@ def pull_utd_data():
         table = soup.findAll(ctable,{mun_table_type:"standard_tabelle"})[0]
         panda_table = pd.read_html(str(table), header=1, parse_dates=['date','date'])[0]
         print panda_table
-        # filename = get_filename(year,is_united)
+        filename = get_filename(str(year),is_united)
         year +=1
-        # write_panda_to_csv(panda_table,filename)
-        # csv_text = read_panda_csv(filename,is_united)
+        write_panda_to_csv(panda_table,filename)
+        csv_text = read_panda_csv(filename,is_united)
     print "Done pulling united data"
 
 pull_utd_data()
