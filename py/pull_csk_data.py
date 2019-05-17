@@ -21,5 +21,3 @@ def pull_csk_data():
         panda_table.to_csv(filename, index=False)
         csv_text = read_panda_csv(filename,True)
     print "Done pulling csk data"
-
-pull_csk_data()

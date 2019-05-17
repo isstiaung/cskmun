@@ -36,5 +36,3 @@ def pull_utd_data():
             write_panda_to_csv(panda_table,filename)
             csv_text = read_panda_csv(filename,is_united)
     print "Done pulling united data"
-
-pull_utd_data()
