@@ -1,16 +1,18 @@
 import pandas as pd
 import glob,os
 from config import *
+from utils import read_panda_csv,write_panda_to_csv,concat_panda
 
 def combine_files():
-    os.chdir(csk_dir)
-    csk_files = glob.glob("./*.csv")
-    combined_csk = pd.concat( [ pd.read_csv(f) for f in csk_files ] )
-    combined_csk.to_csv( "combined_csk.csv", index=False )
+    _combine_files(csk_dir,csk_date_column,combined_csk_file,False)
+    _combine_files(mun_dir,mun_date_column,combined_mun_file,True)
 
-    os.chdir(mun_dir)
-    mun_files = glob.glob("./*.csv")
-    combined_mun = pd.concat( [ pd.read_csv(f) for f in mun_files ] )
-    combined_mun.to_csv( "combined_mun.csv", index=False )
+def _combine_files(dir,date_column,combined_file,is_united):
+    os.chdir(dir)
+    files = glob.glob(csvs)
+    combined_csv = [read_panda_csv(file,is_united) for file in files ]
+    combined_frame = concat_panda(combined_csv)
+    sorted_frame = combined_frame.sort_values([date_column])
+    write_panda_to_csv(sorted_frame,combined_file)
 
 combine_files()

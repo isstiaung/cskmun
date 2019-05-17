@@ -67,3 +67,12 @@ def get_links(soup,is_united):
     else:
         links = soup.find_all(clinks,{csk_link_type:csk_link_attrs})
         return links
+
+def read_panda_csv(filename,is_united):
+    if is_united:
+        return pd.read_csv(filename, sep=",", header=0, parse_dates=[mun_date_column])
+    else:
+        return pd.read_csv(filename, sep=",", header=0, parse_dates=[csk_date_column])
+
+def concat_panda(panda_tables):
+    return pd.concat(panda_tables,sort=True,axis=0, ignore_index=True)

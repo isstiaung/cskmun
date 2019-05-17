@@ -19,10 +19,12 @@ mun_link_type = "class"
 mun_link_attrs = "external text"
 mun_bgcolor = "bgcolor"
 mun_date_column = 'Date'
+combined_mun = "combined_mun.csv"
 
 csk_link_type = "class"
 csk_link_attrs = "QuoteSummary"
 csk_date_column = "Match Date"
+combined_csk = "combined_csk.csv"
 
 ctable = "table"
 ctable_row = "tr"

@@ -19,7 +19,7 @@ def pull_csk_data():
         filename = get_filename(year,is_united)
 
         panda_table.to_csv(filename, index=False)
-        csv_text = pd.read_csv(filename, sep=",", header=0, parse_dates=[csk_date_column])
+        csv_text = read_panda_csv(filename,is_united)
         print csv_text.dtypes
 
 pull_csk_data()

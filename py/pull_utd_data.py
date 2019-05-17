@@ -34,7 +34,7 @@ def pull_utd_data():
             filename = get_filename(year,is_united)
 
             write_panda_to_csv(panda_table,filename)
-            csv_text = pd.read_csv(filename, sep=",", header=0, parse_dates=[mun_date_column])
+            csv_text = read_panda_csv(filename,is_united)
             print csv_text.dtypes
 
 pull_utd_data()
