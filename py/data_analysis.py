@@ -23,6 +23,8 @@ def unify_data():
     print "Done unifying data"
     print read_panda_csv(unified_file,True)
 
-
-#setup()
-#unify_data()
+if data_unification:
+    setup()
+    unify_data()
+else:
+    print "Get to work"
