@@ -7,32 +7,19 @@ from utils import *
 
 def pull_utd_data():
     is_united = True
-    soup = soupen_url(start_utd_url)
-    row_number = 0
-    number_of_rows = get_no_of_rows(soup)
-
-    for row in get_row(soup,is_united):
-        if row_number < (number_of_rows-mun_seasons):
-            row_number+=1
-        else:
-            link = row.findAll(ctable_header)[0].findAll(clinks)[0]
-            link_to_follow = get_follow_link(base_utd_url,link.get(chref))
-            year = link.text
-
-            page_text = soupen_url(link_to_follow)
-            table = get_table(page_text,is_united)
-
-            is_header=True
-            for row in table.tbody.findAll(ctable_row):
-                if is_header:
-                    is_header = False
-                else:
-                    result = get_result(row[mun_bgcolor])
-                    row.find(clinks,{mun_link_type : mun_link_attrs}).replace_with(result)
-
-            panda_table = get_panda_table(table,is_united)
-            filename = get_filename(year,is_united)
-
-            write_panda_to_csv(panda_table,filename)
-            csv_text = read_panda_csv(filename,is_united)
+    year = 2008
+    start_url = start_utd_url
+    while year < 2019:
+        if year > 2008:
+            start_url = start_url.replace(str(year-1),str(year))
+        soup = soupen_url(start_url)
+        table = soup.findAll(ctable,{mun_table_type:"standard_tabelle"})[0]
+        panda_table = pd.read_html(str(table), header=1, parse_dates=['date','date'])[0]
+        print panda_table
+        # filename = get_filename(year,is_united)
+        year +=1
+        # write_panda_to_csv(panda_table,filename)
+        # csv_text = read_panda_csv(filename,is_united)
     print "Done pulling united data"
+
+pull_utd_data()
