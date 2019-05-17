@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import urllib2
 from config import *
+import os
 
 def soupen_url(url):
     page = urllib2.urlopen(url)
@@ -10,7 +11,7 @@ def soupen_url(url):
 def get_no_of_rows(soup):
     number_of_rows = 0
     for table in soup.find_all(ctable,{mun_table_type : mun_table_attrs}):
-        number_of_rows = len(table.findAll(lambda tag: tag.name == 'tr' and tag.findParent('table') == table))
+        number_of_rows = len(table.findAll(lambda tag: tag.name == ctable_row and tag.findParent(ctable) == table))
     return number_of_rows
 
 def get_row(soup,is_united):
@@ -18,61 +19,70 @@ def get_row(soup,is_united):
         rows = soup.find_all(ctable,{mun_table_type:mun_table_attrs})[0].tbody.findAll(ctable_row)
         return rows
     else:
-        print "csk_row"
+        print csk_text
 
 def get_table(soup,is_united):
     if is_united:
-        matches_span = soup.find('span',{'id':'Matches'})
+        matches_span = soup.find(span,{mun_span_type:mun_span_attrs})
         table = ''
         if matches_span != None:
-            table = matches_span.findNext('table')
+            table = matches_span.findNext(ctable)
         else:
-            premier_league = soup.find('span',{'id':'Premier_League'})
-            table = premier_league.findNext('table')
+            premier_league = soup.find(span,{mun_span_type:mun_span_alt_attrs})
+            table = premier_league.findNext(ctable)
         return table
     else:
-        return soup.find_all('table')[0]
+        return soup.find_all(ctable)[0]
 
 def get_follow_link(base_url,url):
     return base_url + url
 
 def get_result(bgcolor):
-    result = "win"
+    result = t_win
     if bgcolor == draw:
-        result =  "draw"
+        result =  t_draw
     elif bgcolor == loss:
-        result = "loss"
+        result = t_loss
     else:
-        result = "win"
+        result = t_win
     return result
 
-def get_panda_table(table,is_united):
-    if is_united:
-        return pd.read_html(str(table), header=0, parse_dates=[mun_date_column])[0]
+def get_panda_table(table,is_unified):
+    if is_unified:
+        return pd.read_html(str(table), header=0, parse_dates=[unified_date_column])[0]
     else:
-        return pd.read_html(str(table), header=0, parse_dates=[csk_date_column])[0]
+        return pd.read_html(str(table), header=0, parse_dates=[default_date_column])[0]
 
 def get_filename(year,is_united):
     if is_united:
-        return mun_dir + '/output_mun_' + year + '.csv'
+        return mun_dir + mun_filler + year + csv
     else:
-        return csk_dir + '/output_csk_' + year + '.csv'
+        return csk_dir + csk_filler + year + csv
 
 def write_panda_to_csv(panda_table,filename):
-    panda_table.to_csv(filename, index=False, encoding='utf8')
+    panda_table.to_csv(filename, index=False, encoding=utf8)
 
 def get_links(soup,is_united):
     if is_united:
-        print "utd links"
+        print mun_text
     else:
         links = soup.find_all(clinks,{csk_link_type:csk_link_attrs})
         return links
 
-def read_panda_csv(filename,is_united):
-    if is_united:
-        return pd.read_csv(filename, sep=",", header=0, parse_dates=[mun_date_column])
+def read_panda_csv(filename,is_unified):
+    if is_unified:
+        return pd.read_csv(filename, sep=c_sep, header=0, parse_dates=[unified_date_column])
     else:
-        return pd.read_csv(filename, sep=",", header=0, parse_dates=[csk_date_column])
+        return pd.read_csv(filename, sep=c_sep, header=0, parse_dates=[default_date_column])
 
 def concat_panda(panda_tables):
     return pd.concat(panda_tables,sort=True,axis=0, ignore_index=True)
+
+
+def get_combined_file(dir,file):
+    os.chdir(dir)
+    return read_panda_csv(file,True)
+
+def write_combined_file(combined_frame,dir,file):
+    os.chdir(dir)
+    write_panda_to_csv(combined_frame,file)

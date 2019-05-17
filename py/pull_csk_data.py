@@ -15,11 +15,11 @@ def pull_csk_data():
         bs_tables = get_table(page_text,is_united)
 
         panda_table = get_panda_table(bs_tables,is_united)
-
+        panda_table.rename(columns = {"Match Date" : "Date"},inplace=True)
         filename = get_filename(year,is_united)
 
         panda_table.to_csv(filename, index=False)
-        csv_text = read_panda_csv(filename,is_united)
+        csv_text = read_panda_csv(filename,True)
         print csv_text.dtypes
 
 pull_csk_data()
