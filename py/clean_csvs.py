@@ -6,6 +6,7 @@ import os
 def clean_csvs():
     _clean_csvs(mun_dir,combined_mun_file,True,mun_to_drop)
     _clean_csvs(csk_dir,combined_csk_file,True,csk_to_drop)
+    print "Done cleaning file"
 
 def _clean_csvs(dir,file,is_united,columns_to_drop):
     combined_frame = get_combined_file(dir,file)

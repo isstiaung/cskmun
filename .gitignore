@@ -4,8 +4,7 @@ pip-selfcheck.json
 bin/
 include/
 lib/
-csk/
-mun/
+data/
 test_output
 config.py*
 *.pyc
