@@ -16,4 +16,4 @@ def _combine_files(dir,date_column,combined_file,is_united):
     sorted_frame = combined_frame.sort_values([date_column])
     write_panda_to_csv(sorted_frame,combined_file)
 
-#combine_files()
+combine_files()

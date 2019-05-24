@@ -15,13 +15,18 @@ def pull_csk_data():
         bs_tables = get_table(page_text,is_united)
 
         panda_table = get_panda_table(bs_tables,is_united)
-        panda_table.rename(columns = {"Match Date" : "datetime"},inplace=True)
-
+        panda_table.rename(columns = {"Match Date" : "newdate"},inplace=True)
+        print panda_table['newdate']
+        panda_table['date'] = pd.to_datetime(panda_table['newdate'])
+        panda_table['time'] =  pd.to_timedelta(10,unit='s')
+        print panda_table['date']
         filename = get_filename(year,is_united)
 
         panda_table.to_csv(filename, index=False)
         csv_text = read_panda_csv(filename,False)
+
         print csv_text.dtypes
+        #sys.exit(0)
     print "Done pulling csk data"
 
-#pull_csk_data()
+pull_csk_data()

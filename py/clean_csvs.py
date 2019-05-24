@@ -13,4 +13,4 @@ def _clean_csvs(dir,file,is_united,columns_to_drop):
     combined_frame.drop(columns_to_drop,axis=1,inplace=True)
     write_combined_file(combined_frame,dir,file)
 
-#clean_csvs()
+clean_csvs()
