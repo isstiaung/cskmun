@@ -49,6 +49,7 @@ def get_result(bgcolor):
 
 def get_panda_table(table,is_unified):
     if is_unified:
+
         return pd.read_html(str(table), header=0, parse_dates=[unified_date_column])[0]
     else:
         return pd.read_html(str(table), header=0, parse_dates=[default_date_column])[0]
@@ -69,19 +70,29 @@ def get_links(soup,is_united):
         links = soup.find_all(clinks,{csk_link_type:csk_link_attrs})
         return links
 
-def read_panda_csv(filename,is_unified):
-    if is_unified:
-        return pd.read_csv(filename, sep=c_sep, header=0, parse_dates=[unified_date_column])
+mun_dateparse = lambda x: pd.datetime.strptime(x, '%d/%m/%Y %H:%M')
+csk_dateparse = lambda x: pd.datetime.strptime(x, '%Y-%m-%d')
+mun_combined_dateparse = lambda x: pd.datetime.strptime(x, '%Y-%m-%d %H:%M:%S')
+
+def clean_read_csv(filename,is_united):
+    if is_united:
+        return pd.read_csv(filename, sep=c_sep, header=0, parse_dates=[unified_date_column],date_parser=mun_combined_dateparse)
     else:
-        return pd.read_csv(filename, sep=c_sep, header=0, parse_dates=[default_date_column])
+        return pd.read_csv(filename, sep=c_sep, header=0, parse_dates=[unified_date_column],date_parser=csk_dateparse)
+
+def read_panda_csv(filename,is_united):
+    if is_united:
+        return pd.read_csv(filename, sep=c_sep, header=0, parse_dates=[unified_date_column],date_parser=mun_dateparse)
+    else:
+        return pd.read_csv(filename, sep=c_sep, header=0, parse_dates=[unified_date_column],date_parser=csk_dateparse)
 
 def concat_panda(panda_tables):
     return pd.concat(panda_tables,sort=True,axis=0, ignore_index=True)
 
 
-def get_combined_file(dir,file):
+def get_combined_file(dir,file,is_united):
     os.chdir(dir)
-    return read_panda_csv(file,True)
+    return clean_read_csv(file,is_united)
 
 def write_combined_file(combined_frame,dir,file):
     os.chdir(dir)
