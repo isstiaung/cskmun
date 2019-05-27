@@ -20,5 +20,6 @@ def get_result():
         unified_data.at[index,'mun_result'] = result
         if csk_winner != 'Super Kings':
             unified_data.at[index,'csk_result'] = 'l'
+    write_panda_to_csv(unified_data,unified_file)
 
 get_result()

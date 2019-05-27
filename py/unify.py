@@ -26,3 +26,5 @@ def unify_data():
     write_panda_to_csv(unified_frame,unified_file)
     print "Done unifying data"
     csv_text = read_panda_csv(unified_file,False)
+
+unify_data()
