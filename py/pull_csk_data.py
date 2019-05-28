@@ -12,44 +12,49 @@ def pull_csk_data():
     soup = soupen_url(start_csk_url)
 
     for link in get_links(soup,is_united):
-        print link
+        #print link
         link_to_follow = get_follow_link(base_csk_url,link.get(chref))
         year = link.text
-        page_text = soupen_url(link_to_follow)
-        bs_tables = get_table(page_text,is_united)
-        rows = bs_tables.find('tbody').find_all('tr')
-        start_times=[]
-
-        for row in rows:
-            print row
-            match_url = get_follow_link(base_csk_url,row.find_all('td')[-1].find_all(clinks)[0].get(chref)).replace("scorecard","game")
-            time_soup = soupen_url(match_url)
-            full_script = time_soup.find_all('script',{"type" : "text/javascript"})[6].string.strip()
-            regex = re.compile('.*\"hoursOfPlay\":\"(.*?)\",')
-            hours_of_play = regex.match(full_script)
-            if hours_of_play:
-                start_time = str(hours_of_play.groups()[0].split(',')[0].split(" ")[0])
-                start_time = start_time.replace(".",":")
-                start_times.append(start_time)
-
-        panda_table = get_panda_table(bs_tables,is_united)
-        panda_table.rename(columns = {"Match Date" : "newdate"},inplace=True)
-        print start_times
-        panda_table['date'] = pd.to_datetime(panda_table['newdate'])
-        if len(start_times) > 0:
-            for index,row in panda_table.iterrows():
-                print index
-                panda_table.at[index,'time'] =  start_times[index]
+        if int(year) <2012 :
+            print "skipping year"
         else:
-            panda_table['time'] =  pd.to_timedelta(10,unit='s')
-        print panda_table['date']
-        print panda_table['time']
-        filename = get_filename(year,is_united)
+            page_text = soupen_url(link_to_follow)
+            bs_tables = get_table(page_text,is_united)
+            rows = bs_tables.find('tbody').find_all('tr')
+            start_times=[]
+            print "csk year : " , year
+            print link_to_follow
+            for row in rows:
+                #print row
+                match_url = get_follow_link(base_csk_url,row.find_all('td')[-1].find_all(clinks)[0].get(chref))
+                print match_url
+                time_soup = soupen_url(match_url)
+                full_script = time_soup.find_all('script',{"type" : "text/javascript"})[6].string.strip()
+                regex = re.compile('.*\"hoursOfPlay\":\"(.*?)\",')
+                hours_of_play = regex.match(full_script)
+                if hours_of_play:
+                    start_time = str(hours_of_play.groups()[0].split(',')[0].split(" ")[0])
+                    start_time = start_time.replace(".",":")
+                    start_times.append(start_time)
 
-        panda_table.to_csv(filename, index=False)
-        csv_text = read_panda_csv(filename,False)
+            panda_table = get_panda_table(bs_tables,is_united)
+            panda_table.rename(columns = {"Match Date" : "newdate"},inplace=True)
+            #print start_times
+            panda_table['date'] = pd.to_datetime(panda_table['newdate'])
+            if len(start_times) > 0:
+                for index,row in panda_table.iterrows():
+                    #print index
+                    panda_table.at[index,'time'] =  start_times[index]
+            else:
+                panda_table['time'] =  pd.to_timedelta(10,unit='s')
+            #print panda_table['date']
+            #print panda_table['time']
+            filename = get_filename(year,is_united)
 
-        print csv_text
+            panda_table.to_csv(filename, index=False)
+            csv_text = read_panda_csv(filename,False)
+
+            print csv_text
     print "Done pulling csk data"
 
-pull_csk_data()
+#pull_csk_data()

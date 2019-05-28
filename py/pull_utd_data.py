@@ -28,4 +28,4 @@ def pull_utd_data():
         #sys.exit()
     print "Done pulling united data"
 
-pull_utd_data()
+#pull_utd_data()

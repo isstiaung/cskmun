@@ -27,4 +27,4 @@ def unify_data():
     print "Done unifying data"
     csv_text = read_panda_csv(unified_file,False)
 
-unify_data()
+#unify_data()

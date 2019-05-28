@@ -16,4 +16,4 @@ def set_played_first():
             played_first = 1
         unified_data.at[index,'played_first'] = played_first
     write_panda_to_csv(unified_data,unified_file)
-set_played_first()
+#set_played_first()
