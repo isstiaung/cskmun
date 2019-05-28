@@ -8,9 +8,9 @@ def set_played_first():
     for index,row in unified_data.iterrows():
         mun_time = row['time_x']
         csk_time = row['time_y']
-        played_first = 'csk'
+        played_first = 0 #csk
         if mun_time<csk_time:
-            played_first = 'mun'
+            played_first = 1
         unified_data.at[index,'played_first'] = played_first
     write_panda_to_csv(unified_data,unified_file)
 set_played_first()
