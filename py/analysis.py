@@ -55,5 +55,3 @@ def analysis():
 
     print "csk pivot table"
     print csk_pivot
-
-analysis()
